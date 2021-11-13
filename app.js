@@ -1,5 +1,6 @@
+const fetch = require('node-fetch');
 const tmi = require('tmi.js');
-import { BOT_USERNAME , OAUTH_TOKEN, CHANNEL_NAME, BLOCKED_WORDS } from './constants'
+const { BOT_USERNAME , OAUTH_TOKEN, CHANNEL_NAME, LINK_TIPEESTREAM, API_TIPEESTREAM } = require('./constants');
 
 const options = {
 	options: { debug: true },
@@ -11,16 +12,21 @@ const options = {
     reconnectInterval: 1000,
 	},
 	identity: {
-		username: BOT_USERNAME,
+		username: CHANNEL_NAME,
 		password: OAUTH_TOKEN
 	},
-	channels: [ CHANNEL_NAME ]
+	channels: BOT_USERNAME
 }
 const client = new tmi.Client(options)
-
 client.connect();
 
 client.on('message', (channel, tags, message, self) => {
 	// "Alca: Hello, World!"
 	console.log(`${tags['display-name']}: ${message}`);
 });
+
+fetch(`${LINK_TIPEESTREAM}forever.json?apiKey=${API_TIPEESTREAM}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log("Hynaton a : "+data.datas.followers+" followers sur twitch et "+data.datas.details.youtube.followers)
+  })
